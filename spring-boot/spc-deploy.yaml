@@ -27,7 +27,14 @@
         owner: springbootuser 
         mode: '500'
         state: file
-
+    - name: Copying Service file from local location 
+      copy:
+        src: springpetclinic.service
+        dest: /etc/systemd/system/springpetclinic.service
+    - name: Make sure spring petclinc service are running
+      systemd:
+        enabled: yes
+        state: started 
 
 
 
