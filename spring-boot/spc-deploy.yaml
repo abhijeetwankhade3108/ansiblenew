@@ -2,35 +2,42 @@
 - name: Spring_boot_deployment
   hosts: appserver 
   become: yes
+  vars:
+    java_package: openjdk-11-jdk
+    app_dir: /usr/share/springpetclinic
+    download_url: https://referenceapplicationskhaja.s3-us-west-2.amazonaws.com/spring-petclinic-2.4.2.jar
+    app_file_name: /usr/share/springpetclinic/spring-petclinic-2.4.2.jar
+    spring_user: springbootuser
+    service_file_path: /etc/systemd/system/springpetclinic.service
   tasks:
     - name: Update ubuntu packages and install openjdk 11
       apt:
-        name: openjdk-11-jdk
+        name: "{ java_package }"
         update_cache: yes
         state: present 
     - name: Creating directory 
       file:
-        path: /usr/share/springpetclinic
+        path: "{ app_dir }"
         state: directory 
     - name: downloading spring_petclinic package
       get_url:
-        url: https://referenceapplicationskhaja.s3-us-west-2.amazonaws.com/spring-petclinic-2.4.2.jar
-        dest: /usr/share/springpetclinic/spring-petclinic-2.4.2.jar
+        url: "{ download_url }"
+        dest: "{ app_file_name }"
     - name: Creating springboot user 
       user:
-        name: springbootuser
+        name: "{ spring_user }"
         password: Pranju@1996
         state: present 
     - name: Changing ownership of jar file
       file:
-        path: /usr/share/springpetclinic/spring-petclinic-2.4.2.jar
-        owner: springbootuser 
+        path: "{ app_file_name }"
+        owner: "{ spring_user }" 
         mode: '500'
         state: file
     - name: Copying Service file from local location 
       copy:
         src: springpetclinic.service
-        dest: /etc/systemd/system/springpetclinic.service
+        dest: "{ service_file_path }"
     - name: Make sure spring petclinc service are running
       systemd:
         name: springpetclinic.service
@@ -42,15 +49,3 @@
 
 
 
-#  1  sudo apt update
-#  2  sudo apt install openjdk-11-jdk -y
-#  3  sudo mkdir /usr/share/springpetclinic
-#  4  wget https://referenceapplicationskhaja.s3-us-west-2.amazonaws.com/spring-petclinic-2.4.2.jar
-#  5  sudo cp spring-petclinic-2.4.2.jar /usr/share/springpetclinic/
-#  6  sudo adduser springbootuser
-#  7  sudo chown springbootuser:springbootuser /usr/share/springpetclinic/spring-petclinic-2.4.2.jar
-#  8  sudo chmod 500 /usr/share/springpetclinic/spring-petclinic-2.4.2.jar
-#  9  sudo vi /etc/systemd/system/springpetclinic.service
-# 10  sudo systemctl enable springpetclinic.service
-# 11  sudo systemctl start springpetclinic.service
-# 12  sudo systemctl status springpetclinic.service
