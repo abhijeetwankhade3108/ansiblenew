@@ -33,6 +33,7 @@
         dest: /etc/systemd/system/springpetclinic.service
     - name: Make sure spring petclinc service are running
       systemd:
+        name: springpetclinic.service
         enabled: yes
         state: started 
 
