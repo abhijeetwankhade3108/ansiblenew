@@ -1,0 +1,10 @@
+--- 
+- name: Installing apache server 
+  hosts: all 
+  become: yes
+  tasks: 
+    - name: Updating and installed apache package
+      apt:
+        name: apache2
+        update_cache: yes
+        state: present 
