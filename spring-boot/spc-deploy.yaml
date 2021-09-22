@@ -12,32 +12,32 @@
   tasks:
     - name: Update ubuntu packages and install openjdk 11
       apt:
-        name: {{ java_package }}
+        name: "{{ java_package }}"
         update_cache: yes
         state: present 
     - name: Creating directory 
       file:
-        path: {{ app_dir }}
+        path: "{{ app_dir }}"
         state: directory 
     - name: downloading spring_petclinic package
       get_url:
-        url: {{ download_url }}
-        dest: {{ app_file_name }}
+        url: "{{ download_url }}"
+        dest: "{{ app_file_name }}"
     - name: Creating springboot user 
       user:
-        name: {{ spring_user }}
+        name: "{{ spring_user }}"
         password: Pranju@1996
         state: present 
     - name: Changing ownership of jar file
       file:
-        path: {{ app_file_name }}
-        owner: {{ spring_user }}
+        path: "{{ app_file_name }}"
+        owner: "{{ spring_user }}"
         mode: '500'
         state: file
     - name: Copying Service file from local location 
       copy:
         src: springpetclinic.service
-        dest: {{ service_file_path }}
+        dest: "{{ service_file_path }}"
     - name: Make sure spring petclinc service are running
       systemd:
         name: springpetclinic.service
